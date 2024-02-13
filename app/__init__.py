@@ -3,6 +3,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from dotenv import load_dotenv
+from flask_seeder import FlaskSeeder
 
 app = Flask(__name__)
 
@@ -19,3 +20,4 @@ db = SQLAlchemy(app)
 # Initialize Flask-Migrate
 migrate = Migrate(app, db)
 from app import routes 
+

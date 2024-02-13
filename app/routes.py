@@ -33,9 +33,17 @@ def update_user(user_id):
 @app.route('/users/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
     user = User.query.get_or_404(user_id)
-    db.session.delete(user)
-    db.session.commit()
-    return jsonify({"message": "User deleted successfully"})
+    try:
+        # Delete associated notes first
+        Note.query.filter_by(user_id=user_id).delete()
+        db.session.delete(user)
+        db.session.commit()
+        return jsonify({"message": "User and associated notes deleted successfully"})
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+
+
 
 # Define routes for CRUD operations on notes
 @app.route('/notes', methods=['POST'])
@@ -55,7 +63,10 @@ def get_notes():
 @app.route('/notes/<int:note_id>', methods=['GET'])
 def get_note(note_id):
     note = Note.query.get_or_404(note_id)
-    return jsonify({"id": note.id, "user_id": note.user_id, "title": note.title, "content": note.content})
+    if note is None:
+        return jsonify({"message": "Note does not exist"}), 404
+    else:
+     return jsonify({"id": note.id, "user_id": note.user_id, "title": note.title, "content": note.content})
 
 @app.route('/notes/<int:note_id>', methods=['PUT'])
 def update_note(note_id):
