@@ -1,8 +1,7 @@
-from app import app, db
-from flask import request, jsonify
-from app import User, Note
-
-
+from flask import request,jsonify
+from app import db,app
+from app.model import User,Note
+# Define routes for CRUD operations on users
 @app.route('/users', methods=['POST'])
 def create_user():
     data = request.json
@@ -11,19 +10,16 @@ def create_user():
     db.session.commit()
     return jsonify({"message": "User created successfully"}), 201
 
-
 @app.route('/users', methods=['GET'])
 def get_users():
     users = User.query.all()
     users_list = [{"id": user.id, "username": user.username, "email": user.email} for user in users]
     return jsonify(users_list)
 
-
 @app.route('/users/<int:user_id>', methods=['GET'])
 def get_user(user_id):
     user = User.query.get_or_404(user_id)
     return jsonify({"id": user.id, "username": user.username, "email": user.email})
-
 
 @app.route('/users/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
@@ -34,7 +30,6 @@ def update_user(user_id):
     db.session.commit()
     return jsonify({"message": "User updated successfully"})
 
-
 @app.route('/users/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
     user = User.query.get_or_404(user_id)
@@ -42,8 +37,7 @@ def delete_user(user_id):
     db.session.commit()
     return jsonify({"message": "User deleted successfully"})
 
-
-
+# Define routes for CRUD operations on notes
 @app.route('/notes', methods=['POST'])
 def create_note():
     data = request.json
@@ -52,19 +46,16 @@ def create_note():
     db.session.commit()
     return jsonify({"message": "Note created successfully"}), 201
 
-
 @app.route('/notes', methods=['GET'])
 def get_notes():
     notes = Note.query.all()
     notes_list = [{"id": note.id, "user_id": note.user_id, "title": note.title, "content": note.content} for note in notes]
     return jsonify(notes_list)
 
-
 @app.route('/notes/<int:note_id>', methods=['GET'])
 def get_note(note_id):
     note = Note.query.get_or_404(note_id)
     return jsonify({"id": note.id, "user_id": note.user_id, "title": note.title, "content": note.content})
-
 
 @app.route('/notes/<int:note_id>', methods=['PUT'])
 def update_note(note_id):
@@ -74,7 +65,6 @@ def update_note(note_id):
     note.content = data['content']
     db.session.commit()
     return jsonify({"message": "Note updated successfully"})
-
 
 @app.route('/notes/<int:note_id>', methods=['DELETE'])
 def delete_note(note_id):
