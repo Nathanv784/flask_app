@@ -1,6 +1,7 @@
 from flask import request,jsonify
 from app import db,app
 from app.model import User,Note
+
 # Define routes for CRUD operations on users
 @app.route('/users', methods=['POST'])
 def create_user():
@@ -30,7 +31,7 @@ def update_user(user_id):
     db.session.commit()
     return jsonify({"message": "User updated successfully"})
 
-@app.route('/users/<int:user_id>', methods=['DELETE'])
+@app.route('/usernote/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
     user = User.query.get_or_404(user_id)
     try:
@@ -41,7 +42,6 @@ def delete_user(user_id):
         return jsonify({"message": "User and associated notes deleted successfully"})
     except Exception as e:
         return jsonify({"error": str(e)})
-
 
 
 
